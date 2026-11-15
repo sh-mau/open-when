@@ -1,60 +1,59 @@
 import os
 import streamlit as st
 
-st.set_page_config(page_title="Open When... 💌", page_icon="💌", layout="centered")
+st.set_page_config(page_title="Open When", page_icon="✉️", layout="centered")
 
 # ------------------------------------------------------------------
-# ⚙️ SOZLAMALAR — shu qismni o'zingizga moslab o'zgartiring
+# SETTINGS: edit this part
 # ------------------------------------------------------------------
-HER_NAME = "Adele"           # uning ismi
-YOUR_NAME = "Sherzod"  # sizning ismingiz
-PASSWORD = "0620"                   # masalan "1409". Bo'sh qoldirsangiz parol so'ralmaydi
+HER_NAME = "Adele"     # her name
+YOUR_NAME = "Sherzod"     # your name
+PASSWORD = "0620"             # e.g. "1409". Leave empty for no password
 
-# Har bir xat:
-#   images: rasmlar ro'yxati  -> ["sad1, miss1, goodnigh"]
-#   video : YouTube havola YOKI fayl -> "https://youtu.be/xxxx" yoki "videos/hello.mp4"
-#   audio : ovozli xabar/qo'shiq fayli -> "audio/voice.mp3"
-# Keraksiz bo'lsa: images=[], video=None, audio=None
+# Each letter:
+#   images: list of image files, e.g. ["images/miss1.jpg"]
+#   video : YouTube link or a file, e.g. "https://youtu.be/xxxx" or "videos/hello.mp4"
+#   audio : audio file, e.g. "audio/voice.mp3"
+# Leave empty if not needed: images=[], video=None, audio=None
 LETTERS = [
     {
         "title": "Open when you're sad",
-        "emoji": "🥺",
-        "text": "Bilaman, hozir qiyin. Lekin esingda tut: sen juda kuchlisan va men doim yoningdaman. "
-                "Chuqur nafas ol, bu kunlar ham o'tib ketadi. Seni qattiq yaxshi ko'raman. ❤️",
+        "text": "I know things feel heavy right now. But remember, you are stronger than "
+                "you think, and I am always on your side. Take a deep breath. "
+                "This will pass, and I'll be here when it does.",
         "images": ["images/sad1.jpg"],
         "video": None,
         "audio": None,
     },
     {
         "title": "Open when you miss me",
-        "emoji": "🥰",
-        "text": "Men ham seni sog'inyapman! Mana bizning rasmimiz, qarab tabassum qil. "
-                "Tez orada ko'rishamiz. 💕",
-        "images": ["images/miss1.jpg"],   # masalan ["images/miss1.jpg", "images/miss2.jpg"]
+        "text": "I miss you too. Look at this picture and smile. "
+                "We'll see each other soon, and until then, you are always on my mind.",
+        "images": ["images/miss1.jpg"],
         "video": None,
         "audio": None,
     },
     {
         "title": "Open when you're angry",
-        "emoji": "😤",
-        "text": "Avval 10 gacha sana. Keyin bir stakan suv ich. Agar mendan xafa bo'lsang, "
-                "kechir, gaplashib hal qilamiz. Sen uchun doim vaqtim bor. 🌷",
+        "text": "Take a moment. Count to ten, drink some water. "
+                "If I'm the reason, I'm sorry. Let's talk when you're ready. "
+                "You matter more to me than being right.",
         "images": [],
         "video": None,
         "audio": None,
     },
     {
         "title": "Open when you can't sleep",
-        "emoji": "🌙",
-        "text": "Ko'zingni yum va men seni mahkam quchoqlab turganimni tasavvur qil. ",
+        "text": "Close your eyes and slow your breathing. Whatever is on your mind "
+                "can wait until tomorrow. Goodnight, and sleep well.",
         "images": ["images/goodnight.jpg"],
         "video": None,
-        "audio": None,   # masalan "audio/goodnight.mp3"
+        "audio": None,
     },
     {
         "title": "Open when you need a hug",
-        "emoji": "🤗",
-        "text": "Hozircha yostiqni quchoqlab tur! 🫂 Yaqinda real hayotda seni quchoqlab olaman, va'da beraman.",
+        "text": "Consider this a long, warm hug from me. "
+                "I'll give you a real one as soon as I can.",
         "images": [],
         "video": None,
         "audio": None,
@@ -62,89 +61,104 @@ LETTERS = [
 ]
 
 # ------------------------------------------------------------------
-# 🎨 DIZAYN
+# DESIGN
 # ------------------------------------------------------------------
 st.markdown(
     """
     <style>
-    .stApp { background: linear-gradient(160deg, #ffd6e0 0%, #ffb3c6 50%, #f8a5c2 100%); }
-    h1, h2, h3, p, label, .stMarkdown { color: #5a1a35 !important; }
-    .title { text-align:center; font-size: 2.4rem; font-weight: 800; margin-bottom: 0; }
-    .sub { text-align:center; opacity:.85; margin-bottom: 1.5rem; }
+    .stApp { background: #f6f1ec; }
+    .block-container { max-width: 680px; padding-top: 3rem; }
+
+    .page-title {
+        text-align: center; font-family: Georgia, serif; font-size: 2rem;
+        color: #3b2f2f; margin-bottom: 0.2rem; letter-spacing: 0.5px;
+    }
+    .page-sub {
+        text-align: center; color: #7a6a6a; font-size: 0.98rem; margin-bottom: 2rem;
+    }
+
     div.stButton > button {
-        width: 100%; height: 90px; border-radius: 18px; border: 2px solid #fff;
-        background: #fff7f9; color: #b0124a; font-size: 1.05rem; font-weight: 700;
-        box-shadow: 0 6px 16px rgba(176,18,74,.25); transition: all .2s ease;
+        width: 100%; min-height: 64px; border-radius: 8px;
+        background: #ffffff; color: #3b2f2f; border: 1px solid #d9cfc7;
+        font-size: 0.98rem; font-weight: 500; box-shadow: none; transition: all .15s ease;
     }
-    div.stButton > button:hover { transform: translateY(-4px) scale(1.02); background:#fff; border-color:#e63977; color:#e63977; }
+    div.stButton > button:hover {
+        border-color: #a8524f; color: #a8524f; background: #fffdfb;
+    }
+    div.stButton > button:focus { box-shadow: none; outline: none; }
+
     .letter {
-        background: #fffaf5; border-radius: 16px; padding: 26px 28px; margin-top: 18px; margin-bottom: 14px;
-        border: 2px dashed #e63977; box-shadow: 0 10px 24px rgba(0,0,0,.12);
-        font-family: Georgia, serif; font-size: 1.15rem; line-height: 1.7; color: #4a2030;
+        background: #fffdf9; border: 1px solid #e3d9d0; border-radius: 8px;
+        padding: 28px 30px; margin: 24px 0 14px 0;
+        font-family: Georgia, serif; color: #3b2f2f;
     }
-    .letter h3 { color: #b0124a !important; margin-top: 0; }
-    .sign { text-align: right; font-style: italic; margin-top: 14px; color:#b0124a; }
+    .letter h3 {
+        margin: 0 0 14px 0; font-size: 1.25rem; font-weight: 600; color: #a8524f;
+    }
+    .letter p { font-size: 1.08rem; line-height: 1.75; margin: 0; color: #3b2f2f; }
+    .letter .sign { text-align: right; font-style: italic; margin-top: 18px; color: #7a6a6a; }
+
+    .footer { text-align: center; color: #9a8c8c; font-size: 0.85rem; margin-top: 2.5rem; }
+    #MainMenu, footer, header { visibility: hidden; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # ------------------------------------------------------------------
-# 🧩 YORDAMCHI: media ko'rsatish
+# HELPERS
 # ------------------------------------------------------------------
 def is_url(s: str) -> bool:
     return s.startswith("http://") or s.startswith("https://")
 
 
-def show_media(L: dict):
-    # Rasmlar
-    imgs = L.get("images") or []
+def show_media(letter: dict):
+    imgs = letter.get("images") or []
     if isinstance(imgs, str):
         imgs = [imgs]
     for img in imgs:
         if is_url(img) or os.path.exists(img):
             st.image(img, use_container_width=True)
         else:
-            st.warning(f"Rasm topilmadi: {img}")
+            st.warning(f"Image not found: {img}")
 
-    # Video (YouTube havola yoki mp4 fayl)
-    video = L.get("video")
+    video = letter.get("video")
     if video:
         if is_url(video) or os.path.exists(video):
             st.video(video)
         else:
-            st.warning(f"Video topilmadi: {video}")
+            st.warning(f"Video not found: {video}")
 
-    # Audio (mp3 / wav / m4a)
-    audio = L.get("audio")
+    audio = letter.get("audio")
     if audio:
         if is_url(audio) or os.path.exists(audio):
             st.audio(audio)
         else:
-            st.warning(f"Audio topilmadi: {audio}")
+            st.warning(f"Audio not found: {audio}")
 
 
 # ------------------------------------------------------------------
-# 🔒 PAROL (ixtiyoriy)
+# PASSWORD (optional)
 # ------------------------------------------------------------------
 if PASSWORD:
     if not st.session_state.get("auth"):
-        st.markdown('<p class="title">🔒 Maxfiy sahifa</p>', unsafe_allow_html=True)
-        pw = st.text_input("Parolni kiriting (bizning maxsus sanamiz 😉)", type="password")
+        st.markdown('<p class="page-title">Private page</p>', unsafe_allow_html=True)
+        st.markdown('<p class="page-sub">Please enter the password.</p>', unsafe_allow_html=True)
+        pw = st.text_input("Password", type="password", label_visibility="collapsed")
         if pw:
             if pw == PASSWORD:
                 st.session_state["auth"] = True
                 st.rerun()
             else:
-                st.error("Noto'g'ri parol, yana urinib ko'r 💔")
+                st.error("Incorrect password.")
         st.stop()
 
 # ------------------------------------------------------------------
-# 💌 ASOSIY SAHIFA
+# MAIN PAGE
 # ------------------------------------------------------------------
-st.markdown('<p class="title">💌 Open When...</p>', unsafe_allow_html=True)
+st.markdown('<p class="page-title">Open When</p>', unsafe_allow_html=True)
 st.markdown(
-    f'<p class="sub">{HER_NAME}, sen uchun maxsus xatlar. Kerakli paytda konvertni och! 💗</p>',
+    f'<p class="page-sub">{HER_NAME}, these letters are for you. Open one whenever you need it.</p>',
     unsafe_allow_html=True,
 )
 
@@ -154,9 +168,8 @@ if "open_idx" not in st.session_state:
 cols = st.columns(2)
 for i, letter in enumerate(LETTERS):
     with cols[i % 2]:
-        if st.button(f"{letter['emoji']}  {letter['title']}", key=f"btn_{i}"):
+        if st.button(letter["title"], key=f"btn_{i}", use_container_width=True):
             st.session_state.open_idx = i
-            st.balloons()
 
 idx = st.session_state.open_idx
 if idx is not None:
@@ -164,16 +177,16 @@ if idx is not None:
     st.markdown(
         f"""
         <div class="letter">
-            <h3>{L['emoji']} {L['title']}</h3>
+            <h3>{L['title']}</h3>
             <p>{L['text']}</p>
-            <p class="sign">— {YOUR_NAME} ❤️</p>
+            <p class="sign">Yours, {YOUR_NAME}</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
     show_media(L)
-    if st.button("✖ Yopish", key="close"):
+    if st.button("Close", key="close"):
         st.session_state.open_idx = None
         st.rerun()
 
-st.markdown("<br><p style='text-align:center'>Seni sevaman 💖</p>", unsafe_allow_html=True)
+st.markdown('<p class="footer">Made with love.</p>', unsafe_allow_html=True)
