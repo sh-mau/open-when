@@ -31,14 +31,14 @@ LETTERS = [
                 "We'll see each other soon, and until then, you are always on my mind.",
         "images": ["images/miss1.jpg"],
         "video": None,
-        "audio": None,
+        "audio": "audio/miss1.mp3",
     },
     {
         "title": "Open when you're angry",
         "text": "Take a moment. Count to ten, drink some water. "
                 "If I'm the reason, I'm sorry. Let's talk when you're ready. "
                 "You matter more to me than being right.",
-        "images": [],
+        "images": ["images/angry1.jpg"],
         "video": None,
         "audio": None,
     },
